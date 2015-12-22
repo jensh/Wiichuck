@@ -9,6 +9,7 @@
 
 void Wiichuck::init(int powerPin, int groundPin) {
 	// Set the output pins to VCC and GND
+	int cnt;
 	if(powerPin > 0) {
 	  pinMode(powerPin, OUTPUT);
 	  digitalWrite(powerPin, HIGH);
@@ -22,6 +23,7 @@ void Wiichuck::init(int powerPin, int groundPin) {
 	delay(100);
 	
 	Wire.begin();
+	/*
 	Wire.beginTransmission(Address);
 #if (ARDUINO >= 100)    
 	Wire.write(0x40);
@@ -31,7 +33,64 @@ void Wiichuck::init(int powerPin, int groundPin) {
 	Wire.send(0x00);
 #endif    
 	Wire.endTransmission();
-	
+
+	*/
+	Wire.beginTransmission(Address);
+	Wire.write(0xF0);
+	Wire.write(0x55);
+	Wire.endTransmission();
+	delay(1);
+	Wire.beginTransmission(0x52);
+	Wire.write(0xFB);
+	Wire.write(0x00);
+	Wire.endTransmission();
+
+/*
+	Serial.print ("Step 2\n");
+	// read the extension type from the register block        
+	Wire.beginTransmission(0x52);
+	Wire.write(0xFA);                    // extension type register
+	Wire.endTransmission();
+	Wire.beginTransmission(0x52);
+	Wire.requestFrom(0x52, 6);               // request data from controller
+	byte ctrlr_type[6];
+	for (cnt = 0; cnt < 6; cnt++) {
+		if (Wire.available()) {
+			ctrlr_type[cnt] = Wire.read(); // Should be 0x0000 A420 0101 for Classic Controller, 0x0000 A420 0000 for nunchuck
+		}
+	}
+	Wire.endTransmission();
+	delay(1);
+*/
+	         
+	Serial.print ("Step 3\n");
+	// write the crypto key (zeros), in 3 blocks of 6, 6 & 4.
+	Wire.beginTransmission(0x52);
+	Wire.write(0xF0);                    // crypto key command register
+	Wire.write(0xAA);                    // writes crypto enable notice
+	Wire.endTransmission();
+	delay(1);
+	Wire.beginTransmission(0x52);
+	Wire.write(0x40);                    // crypto key data address
+	for (cnt = 0; cnt < 6; cnt++) {
+		Wire.write(0x00);                    // writes 1st key block (zeros)
+	}
+	Wire.endTransmission();
+	Wire.beginTransmission(0x52);
+	Wire.write(0x40);                    // writes memory address
+	for (cnt = 6; cnt < 12; cnt++) {
+		Wire.write(0x00);                    // writes 2nd key block (zeros)
+	}
+	Wire.endTransmission();
+	Wire.beginTransmission(0x52);
+	Wire.write(0x40);                    // writes memory address
+	for (cnt = 12; cnt < 16; cnt++) {
+		Wire.write(0x00);                    // writes 3rd key block (zeros)
+	}
+	Wire.endTransmission();
+	delay(1);
+	// end device init 
+
 	// Set default calibration
 	calib.joyX = calib.joyY = 128;
 	calib.accelX = calib.accelY = calib.accelZ = 125; // accel and lsb together == 500.
