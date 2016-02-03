@@ -4,10 +4,15 @@
 Wiichuck wii;
 
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(115200);
+//  Serial.begin(9600);
+
+  Serial.println("Hi");
   wii.init();
+  Serial.println("Init done");
   
   wii.calibrate();  // calibration
+  Serial.println("Clibrate done");
 }
 
 void loop() {
@@ -33,5 +38,5 @@ void loop() {
     Serial.println("");
   }
   
-  delay(100);
+  delay(3);
 }
