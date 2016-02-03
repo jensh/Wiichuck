@@ -46,7 +46,6 @@ void Wiichuck::init(int powerPin, int groundPin) {
 	Wire.endTransmission();
 
 /*
-	Serial.print ("Step 2\n");
 	// read the extension type from the register block        
 	Wire.beginTransmission(0x52);
 	Wire.write(0xFA);                    // extension type register
@@ -63,7 +62,6 @@ void Wiichuck::init(int powerPin, int groundPin) {
 	delay(1);
 */
 	         
-	Serial.print ("Step 3\n");
 	// write the crypto key (zeros), in 3 blocks of 6, 6 & 4.
 	Wire.beginTransmission(0x52);
 	Wire.write(0xF0);                    // crypto key command register
