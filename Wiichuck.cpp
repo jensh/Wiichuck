@@ -117,7 +117,7 @@ uint8_t Wiichuck::poll() {
 #endif
 	Wire.endTransmission();
       
-	delay(100);
+	// delay(100);
 	return bytes >= 5;
 }
 
